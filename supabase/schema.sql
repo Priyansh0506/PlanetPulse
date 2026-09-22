@@ -20,13 +20,19 @@ create table if not exists public.activities (
   quantity    numeric     not null,
   co2_kg      numeric     not null,
   flagged     boolean     not null default false,
-  created_at  timestamptz not null default now()
+  created_at  timestamptz not null default now(),
+  constraint activities_type_check check (type in ('car', 'bus', 'flight', 'electricity', 'veg_meal', 'nonveg_meal')),
+  constraint activities_quantity_check check (quantity > 0),
+  constraint activities_co2_check check (co2_kg >= 0)
 );
 
 -- The dashboard and history both read newest-first, and the weekly window
 -- filters on created_at, so index it.
 create index if not exists activities_created_at_idx
   on public.activities (created_at desc);
+
+create index if not exists activities_type_created_at_idx
+  on public.activities (type, created_at desc);
 
 create table if not exists public.settings (
   key   text primary key,

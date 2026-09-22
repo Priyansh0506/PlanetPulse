@@ -22,9 +22,10 @@ import { logActivity } from '../lib/activities';
  * and offers "Edit value" (returns focus to the input) and "Log anyway" (saves
  * it, flagged). Nothing is ever blocked.
  */
-export default function ActivityForm({ onLogged }) {
-  const [type, setType] = useState('car');
-  const [quantity, setQuantity] = useState('');
+export default function ActivityForm({ onLogged, preset }) {
+  const [type, setType] = useState(preset?.type || 'car');
+  const [quantity, setQuantity] = useState(preset ? String(preset.quantity) : '');
+  const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [pending, setPending] = useState(null); // DP2 confirm state
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(null);
@@ -59,7 +60,8 @@ export default function ActivityForm({ onLogged }) {
     setError(null);
     try {
       const co2Kg = calculateCO2(type, qty);
-      const result = await logActivity({ type, quantity: qty, co2Kg, flagged });
+      const selectedDate = new Date(`${date}T12:00:00`);
+      const result = await logActivity({ type, quantity: qty, co2Kg, flagged, createdAt: selectedDate.toISOString() });
       setQuantity('');
       setPending(null);
       setSuccess({
@@ -72,12 +74,8 @@ export default function ActivityForm({ onLogged }) {
       });
       onLogged?.();
       quantityRef.current?.focus();
-    } catch (e) {
-      setError(
-        e?.message
-          ? `Could not save that entry: ${e.message}`
-          : 'Could not save that entry. Please try again.'
-      );
+    } catch {
+      setError('Something went wrong while saving your activity. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -171,6 +169,18 @@ export default function ActivityForm({ onLogged }) {
           Measured in {meta.unit}. {meta.label} emits {meta.factor} kg CO₂ per{' '}
           {meta.unit}.
         </p>
+      </div>
+
+      <div className="field">
+        <label htmlFor="activity-date">Date</label>
+        <input
+          id="activity-date"
+          name="date"
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+        />
+        <p className="field-hint">Use the day the activity happened. This also controls weekly totals and date filters.</p>
       </div>
 
       <div className="co2-preview" aria-live="polite">

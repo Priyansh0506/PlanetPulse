@@ -190,8 +190,9 @@ export async function fetchActivities({ from, to } = {}) {
   try {
     let query = supabase
       .from('activities')
-      .select('*')
+      .select('id,type,quantity,co2_kg,flagged,created_at')
       .order('created_at', { ascending: false });
+    query = query.limit(500);
     if (from) query = query.gte('created_at', from);
     if (to) query = query.lte('created_at', to);
     const { data, error } = await query;
@@ -227,14 +228,14 @@ function sortDesc(list) {
   return [...list].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 }
 
-export async function logActivity({ type, quantity, co2Kg, flagged }) {
+export async function logActivity({ type, quantity, co2Kg, flagged, createdAt }) {
   const entry = {
     id: makeId(),
     type,
     quantity,
     co2_kg: co2Kg,
     flagged: !!flagged,
-    created_at: new Date().toISOString(),
+    created_at: createdAt || new Date().toISOString(),
   };
 
   // Optimistic local write so the entry is never lost to a network hiccup.

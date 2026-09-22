@@ -29,6 +29,7 @@ function makeStubClient() {
     eq: () => builder,
     gte: () => builder,
     lte: () => builder,
+    limit: () => builder,
     order: () => builder,
     single: () => Promise.resolve(result),
     maybeSingle: () => Promise.resolve(result),

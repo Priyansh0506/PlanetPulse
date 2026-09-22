@@ -12,6 +12,7 @@ export default function WeeklyTargetCard({ target, weekTotalKg, topCategory, onT
   const dayOfWeek = getDayOfWeek();
   const nudge = target ? getNudgeStatus(weekTotalKg, target, dayOfWeek, topCategory) : { level: 'none' };
   const pct = target ? Math.min(100, (weekTotalKg / target) * 100) : 0;
+  const remaining = target ? Math.max(0, target - weekTotalKg) : 0;
 
   async function save() {
     const kg = Number(value);
@@ -24,32 +25,38 @@ export default function WeeklyTargetCard({ target, weekTotalKg, topCategory, onT
   return (
     <div className="card">
       <div className="card-header-row">
-        <h2>Weekly target</h2>
+        <h2>Weekly Target</h2>
         <span className="week-label">{getWeekProgressLabel()}</span>
       </div>
 
       {editing ? (
-        <div className="field-row">
-          <input
-            type="number"
-            min="0"
-            step="1"
-            placeholder="kg CO₂ per week"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          />
-          <button className="btn-primary" onClick={save}>Set target</button>
+        <div>
+          <label className="filter-label" htmlFor="weekly-target">Weekly Target (kg CO₂)</label>
+          <div className="field-row">
+            <input
+              id="weekly-target"
+              type="number"
+              min="0"
+              step="1"
+              placeholder="e.g. 40"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+            />
+            <button type="button" className="btn btn-primary" onClick={save}>Set Weekly Target</button>
+          </div>
         </div>
       ) : (
         <>
           <div className={`progress-track nudge-${nudge.level}`}>
             <div className="progress-fill" style={{ width: `${pct}%` }} />
           </div>
-          <p className="progress-caption">
-            {weekTotalKg.toFixed(1)} / {target} kg CO₂
-          </p>
+          <div className="target-stats" aria-label="Weekly target summary">
+            <span><strong>{weekTotalKg.toFixed(1)}</strong> Used</span>
+            <span><strong>{target}</strong> Target</span>
+            <span><strong>{remaining.toFixed(1)}</strong> Remaining</span>
+          </div>
           {nudge.message && <p className={`nudge-message nudge-${nudge.level}`}>{nudge.message}</p>}
-          <button className="btn-ghost small" onClick={() => setEditing(true)}>Change target</button>
+          <button type="button" className="btn btn-ghost small" onClick={() => setEditing(true)}>Change Weekly Target</button>
         </>
       )}
     </div>

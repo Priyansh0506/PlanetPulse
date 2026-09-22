@@ -13,20 +13,57 @@ export default function HistoryFilter({ activities }) {
     return true;
   });
 
+  function exportCsv() {
+    const header = ['Date', 'Activity', 'Quantity', 'Unit', 'CO2 kg', 'Flagged'];
+    const rows = filtered.map((a) => [
+      new Date(a.created_at).toISOString().slice(0, 10),
+      EMISSION_FACTORS[a.type]?.label || a.type,
+      a.quantity,
+      EMISSION_FACTORS[a.type]?.unit || '',
+      a.co2_kg,
+      a.flagged ? 'Yes' : 'No',
+    ]);
+    const csv = [header, ...rows]
+      .map((row) => row.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(','))
+      .join('\n');
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'planetpulse-history.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div className="card">
       <h2>History</h2>
+      <p className="section-intro">Review every saved activity. Filters update the list without changing your totals.</p>
 
-      <div className="field-row">
-        <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
-          <option value="all">All types</option>
-          {Object.entries(EMISSION_FACTORS).map(([key, v]) => (
-            <option key={key} value={key}>{v.label}</option>
-          ))}
-        </select>
-        <input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)} />
+      <div className="history-filters">
+        <div className="filter-control">
+          <label className="filter-label" htmlFor="history-type">Filter by Type</label>
+          <select id="history-type" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
+            <option value="all">All types</option>
+            {Object.entries(EMISSION_FACTORS).map(([key, v]) => (
+              <option key={key} value={key}>{v.label}</option>
+            ))}
+          </select>
+        </div>
+        <div className="filter-control">
+          <label className="filter-label" htmlFor="history-date">Filter by Date</label>
+          <input id="history-date" type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)} />
+        </div>
+        <div className="filter-actions">
+          <button className="btn btn-quiet" type="button" onClick={() => { setTypeFilter('all'); setDateFilter(''); }}>
+            Clear Filters
+          </button>
+          <button className="btn btn-quiet" type="button" onClick={exportCsv} disabled={filtered.length === 0}>
+            Export CSV
+          </button>
+        </div>
       </div>
 
+      <div className="table-wrap">
       <table className="history-table">
         <thead>
           <tr>
@@ -60,6 +97,7 @@ export default function HistoryFilter({ activities }) {
           )}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }
