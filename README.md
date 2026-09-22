@@ -6,10 +6,9 @@ Monday-to-Sunday weekly target, and filter the full history.
 
 ## Required Hackathon ID
 
-`REQUIRED HACKATHON ID: ADD YOUR HACKATHON ID HERE`
+`REQUIRED HACKATHON ID: AZIS-KQ7ZFC`
 
-Replace the placeholder above with the exact ID shown on the hackathon team
-page. A fake ID is not safe to add, and no ID was available in this repository.
+This is the Hackathon ID for Hardiwar Team 14.
 
 ## Stack
 
@@ -36,9 +35,12 @@ npm run build
 
 ## Persistence and deployment
 
-Without environment variables, PlanetPulse stores entries and the weekly target
-in the browser so it still works after refresh. For remote persistence, create a
-Supabase project, run [`supabase/schema.sql`](supabase/schema.sql), and add:
+PlanetPulse is configured for the project Supabase instance in Vercel
+Production. Run [`supabase/schema.sql`](supabase/schema.sql) once in the
+Supabase SQL Editor to create the `activities` and `settings` tables with RLS
+policies and indexes.
+
+For a new local setup, add:
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=your-project-url
@@ -55,16 +57,18 @@ npm run build
 npm run start
 ```
 
-The app is intentionally single-worker and uses small Supabase queries with
+The live deployment uses small Supabase queries with
 indexes on `created_at` and `(type, created_at)`. It does not load a database
 into memory and has no background processing. Supabase remains optional; local
-fallback is explicit in the UI after a remote write cannot be reached.
+fallback is explicit in the UI as `Browser saved` if the remote database cannot
+be reached.
 
 ## Public submission URL
 
 `PUBLIC URL: https://planetpulse-two.vercel.app`
 
-This is the public Vercel production URL for the deployed app.
+This is the public Vercel production URL for the deployed app. The GitHub
+repository is connected to Vercel for future production deployments.
 
 ## CO2 factors
 
