@@ -1,0 +1,161 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0c0c0c;
+  --surface: #161514;
+  --surface-raised: #1d1b1a;
+  --line: #2b2826;
+  --text: #ede9e5;
+  --text-dim: #a39d96;
+  --accent: #d97757;
+  --accent-dim: #7a4531;
+  --good: #6e9b7a;
+  --warn: #d9a34f;
+  --bad: #c9584a;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in { animation: fadeIn 0.5s ease-out both; }
+.fade-in:nth-child(1) { animation-delay: 0.05s; }
+.fade-in:nth-child(2) { animation-delay: 0.1s; }
+.fade-in:nth-child(3) { animation-delay: 0.15s; }
+.fade-in:nth-child(4) { animation-delay: 0.2s; }
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, "Inter", "Segoe UI", sans-serif;
+  margin: 0;
+}
+
+.shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+
+.app-header { margin-bottom: 32px; }
+.app-header h1 {
+  font-size: 2rem;
+  margin: 0 0 4px;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+.app-header p { color: var(--text-dim); margin: 0; }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.span-2 { grid-column: 1 / -1; }
+
+@media (max-width: 720px) {
+  .grid { grid-template-columns: 1fr; }
+  .span-2 { grid-column: auto; }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px;
+}
+.card h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 14px;
+  color: var(--text);
+}
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+}
+.card-header-row h2 { margin: 0; }
+.week-label { color: var(--text-dim); font-size: 0.85rem; }
+
+.field-row { display: flex; gap: 10px; margin-bottom: 12px; }
+.field-row select,
+.field-row input {
+  flex: 1;
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--text);
+  padding: 9px 10px;
+  font-size: 0.9rem;
+}
+.unit-label { align-self: center; color: var(--text-dim); font-size: 0.85rem; }
+
+button { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.btn-primary {
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: #1a0f0a;
+  font-weight: 600;
+  padding: 9px 16px;
+  cursor: pointer;
+}
+.btn-primary:hover { transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--text-dim);
+  padding: 9px 16px;
+  cursor: pointer;
+}
+.btn-ghost.small { padding: 6px 12px; font-size: 0.8rem; margin-top: 8px; }
+
+.warning-box {
+  background: rgba(217, 163, 79, 0.1);
+  border: 1px solid var(--warn);
+  border-radius: 8px;
+  padding: 14px;
+}
+.warning-box p { margin: 0 0 10px; font-size: 0.88rem; color: var(--text); }
+.warning-actions { display: flex; gap: 10px; }
+
+.big-number { font-size: 2.2rem; font-weight: 700; margin: 0 0 16px; color: var(--text); }
+.big-number span { font-size: 1rem; font-weight: 400; color: var(--text-dim); }
+
+.breakdown-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.breakdown-label { width: 90px; font-size: 0.82rem; color: var(--text-dim); text-transform: capitalize; }
+.breakdown-bar-track { flex: 1; background: var(--surface-raised); border-radius: 4px; height: 8px; overflow: hidden; }
+.breakdown-bar { background: var(--accent); height: 100%; border-radius: 4px; }
+.breakdown-value { width: 60px; text-align: right; font-size: 0.82rem; color: var(--text-dim); }
+.flagged-note { margin-top: 12px; font-size: 0.78rem; color: var(--text-dim); }
+
+.progress-track { background: var(--surface-raised); border-radius: 5px; height: 10px; overflow: hidden; margin-bottom: 8px; }
+.progress-fill { height: 100%; border-radius: 5px; background: var(--good); transition: width 0.3s ease; }
+.nudge-ahead .progress-fill { background: var(--warn); }
+.nudge-exceeded .progress-fill { background: var(--bad); }
+.progress-caption { font-size: 0.85rem; color: var(--text-dim); margin: 0 0 10px; }
+.nudge-message { font-size: 0.85rem; margin: 0; padding: 10px 12px; border-radius: 6px; background: var(--surface-raised); }
+.nudge-message.nudge-exceeded { border-left: 3px solid var(--bad); }
+.nudge-message.nudge-ahead { border-left: 3px solid var(--warn); }
+.nudge-message.nudge-on-track { border-left: 3px solid var(--good); }
+
+.history-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.history-table th { text-align: left; color: var(--text-dim); font-weight: 500; padding: 8px 6px; border-bottom: 1px solid var(--line); }
+.history-table td { padding: 8px 6px; border-bottom: 1px solid var(--line); }
+.row-flagged { opacity: 0.7; }
+.badge-flag {
+  background: rgba(201, 88, 74, 0.15);
+  color: var(--bad);
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.empty { color: var(--text-dim); font-size: 0.85rem; text-align: center; padding: 12px 0; }
