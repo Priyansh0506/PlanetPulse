@@ -62,10 +62,9 @@ fallback is explicit in the UI after a remote write cannot be reached.
 
 ## Public submission URL
 
-`PUBLIC URL: ADD YOUR DEPLOYED PLANETPULSE URL HERE`
+`PUBLIC URL: https://planetpulse-two.vercel.app`
 
-Replace this with the deployed app URL before submitting. It must be a public
-running URL, not a repository link or a local `localhost` address.
+This is the public Vercel production URL for the deployed app.
 
 ## CO2 factors
 
